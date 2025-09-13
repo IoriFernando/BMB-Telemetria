@@ -1,62 +1,97 @@
-#include <Arduino.h>           // Base do Arduino
-#include <OneWire.h>           // Comunicação 1-Wire
-#include <DallasTemperature.h> // Biblioteca do DS18B20
+#include <Arduino.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
-/*
-  Projeto desenvolvido não estar utilizando a biblioteca do nextion
-  por conta de problema de compatibilidade e por usuadilidade por isso 
-  foi utilizado a comunicação serial para envio das informações.
-  
-  Hardware utilizado:
-  - Arduino Mega
-  - Nextion conectada na Serial1 (TX1 - pino 18, RX1 - pino 19)
-  - Sensor DS18B20 no pino 4
-*/
+// ------------------- Configurações Nextion -------------------
+const String nextionRPM  = "t1"; // componente para RPM
+const String nextionTemp = "t4"; // componente para temperatura
 
 // ------------------- Configuração do DS18B20 -------------------
-#define ONE_WIRE_BUS 4  // GPIO 4 (pino de dados do DS18B20)
-
-// Instancia barramento OneWire
+#define ONE_WIRE_BUS 4
 OneWire oneWire(ONE_WIRE_BUS);
-
-// Passa o OneWire para a biblioteca do sensor
 DallasTemperature sensors(&oneWire);
 
-void setup() {
-  Serial.begin(115200);   // USB para debug
-  Serial1.begin(9600);    // UART1 para Nextion (ajuste baud rate conforme a tela)
+// ------------------- Configurações do sensor Hall -------------------
+volatile unsigned long pulseCount = 0;
+const int sensorPin = 2;
+const unsigned int pulsesPerRevolution = 1;
+const unsigned long sampleTime = 200; // intervalo de medição do RPM em ms
 
-  Serial.println("Teste Nextion: escrevendo texto...");
-  Serial1.print("t0.txt=\"Iori Fernando\""); 
-  Serial1.write(0xFF);  // terminador 1
-  Serial1.write(0xFF);  // terminador 2
-  Serial1.write(0xFF);  // terminador 3
+// ------------------- Controle de tempo -------------------
+unsigned long lastRPMUpdate  = 0;
+unsigned long lastTempUpdate = 0;
 
-
-  sensors.begin();
+// ------------------- Função de interrupção -------------------
+void pulseDetected() {
+  pulseCount++; // incrementa pulsos do sensor
 }
 
-void loop() {
-  
-  // Solicita leitura dos sensores DS18B20
-  sensors.requestTemperatures(); 
+// ------------------- Função para enviar comandos ao Nextion -------------------
+void sendNextionCommand(const String &cmd) {
+  Serial1.print(cmd);
+  Serial1.write(0xFF);
+  Serial1.write(0xFF);
+  Serial1.write(0xFF);
+}
 
-  float tempC = sensors.getTempCByIndex(0); 
+// ------------------- Função para calcular RPM -------------------
+float calculateRPM() {
+  noInterrupts();           // desativa interrupções para ler pulseCount com segurança
+  unsigned long count = pulseCount;
+  pulseCount = 0;           // zera contador
+  interrupts();             // reativa interrupções
+
+  float rpm = (count * 60000.0) / (sampleTime * pulsesPerRevolution); // cálculo RPM
+  Serial.print("RPM: ");
+  Serial.println(rpm);
+  sendNextionCommand(nextionRPM + ".txt=\"" + String(rpm, 0) + "\"");
+  return rpm;
+}
+
+// ------------------- Função para ler temperatura -------------------
+void updateTemperature() {
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
 
   if (tempC == DEVICE_DISCONNECTED_C) {
     Serial.println("Sensor DS18B20 não encontrado!");
-  }else {
-    // Mostra no monitor serial (debug)
+    sendNextionCommand(nextionTemp + ".txt=\"--\"");
+  } else {
     Serial.print("Temperatura: ");
     Serial.print(tempC);
     Serial.println(" ºC");
+    sendNextionCommand(nextionTemp + ".txt=\"" + String(tempC, 0) + "\"");
+  }
+}
 
-    // ----------- Envia para o Nextion -----------
-    Serial1.print("t1.txt=\"");   // abre comando
-    Serial1.print(tempC);         // valor da temperatura
-    Serial1.print(" C\"");        // fecha string (vai aparecer: 25.3 C)
-    Serial1.write(0xFF);          // terminador 1
-    Serial1.write(0xFF);          // terminador 2
-    Serial1.write(0xFF);          // terminador 3
+// ------------------- Setup -------------------
+void setup() {
+  Serial.begin(115200);
+  Serial1.begin(9600);
+
+  // Inicializa sensor de temperatura
+  sensors.begin();
+
+  // Configura pino do sensor Hall com interrupção
+  pinMode(sensorPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(sensorPin), pulseDetected, RISING);
+
+  Serial.println("Sistema inicializado.");
+}
+
+// ------------------- Loop -------------------
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // Atualiza RPM a cada sampleTime
+  if (currentMillis - lastRPMUpdate >= sampleTime) {
+    calculateRPM();
+    lastRPMUpdate = currentMillis;
+  }
+
+  // Atualiza temperatura a cada 1000 ms
+  if (currentMillis - lastTempUpdate >= 1000) {
+    updateTemperature();
+    lastTempUpdate = currentMillis;
   }
 }
