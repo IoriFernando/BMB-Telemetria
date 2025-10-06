@@ -1,19 +1,20 @@
 # Bumba Meu Baja - Telemetria
-  ## 📘 Descrição Geral
 
-<div style="display: flex; align-items: center; gap: 30px; margin: 20px 0;">
-  <div style="flex: 0 0 auto;">
-    <img src="img/logoBmb.png" alt="Logo BMB" width="300"/>
-  </div>
-  <div style="flex: 1;">
-    Este código foi desenvolvido para o <b>ESP32</b>, com o objetivo de realizar medições simultâneas de <b>RPM</b>, <b>temperatura</b> e <b>velocidade linear</b> (km/h), exibindo as informações em um <b>display Nextion</b>.  
-    Os sensores utilizados são: <br>
-    - <b>Sensor Hall</b> para medição de RPM;<br>
-    - <b>Sensor Hall</b> secundário para cálculo da velocidade;<br>
-    - <b>Sensor de temperatura DS18B20</b> via barramento <b>OneWire</b>.<br><br>
-    A comunicação entre o ESP32 e o display Nextion ocorre por meio da <b>UART2 (Serial2)</b>.
-  </div>
+<div align="center">
+<img src="img/logoBmb.png" alt="Projeto Completo" width="30%"/>
+<br>
 </div>
+
+## 📘 Descrição Geral
+Este código foi desenvolvido para o **ESP32**, com o objetivo de realizar medições simultâneas de **RPM**, **temperatura** e **velocidade linear** (km/h), exibindo as informações em um **display Nextion**.  
+Os sensores utilizados são:
+- **Sensor Hall** para medição de RPM;
+- **Sensor Hall** secundário para cálculo da velocidade;
+- **Sensor de temperatura DS18B20** via barramento **OneWire**.
+
+A comunicação entre o ESP32 e o display Nextion ocorre por meio da **UART2 (Serial2)**.
+
+---
 
 ## Pinagem
 
