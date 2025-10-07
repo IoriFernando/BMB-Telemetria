@@ -98,7 +98,7 @@ float calculateSpeed() {
   Serial.print(kmh);
   Serial.println(" km/h");
 
-  sendNextionCommand(nextionSpeed + ".txt=\"" + String(kmh, 1) + "\"");
+  sendNextionCommand(nextionSpeed + ".txt=\"" + String(kmh, 0) + "\"");
 
   return kmh;
 }
