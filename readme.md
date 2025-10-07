@@ -27,6 +27,8 @@ A comunicação entre o ESP32 e o display Nextion ocorre por meio da **UART2 (Se
 | Nextion RX               | GPIO 16 | UART2 RX             |
 
 ---
+### Obs.: O sensor DS18B20 deve obriatoriamente um resistor pull-up
+
 
 ## ⚙️ Estrutura Geral do Código
 
