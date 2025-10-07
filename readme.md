@@ -1,7 +1,7 @@
 # Bumba Meu Baja - Telemetria
 
 <div align="center">
-<img src="img/logoBmb.png" alt="Projeto Completo" width="30%"/>
+<img src="img/logoBmb.png" alt="Projeto Completo" width="%"/>
 <br>
 </div>
 
@@ -208,16 +208,18 @@ O loop verifica continuamente o tempo decorrido para atualizar as medições em 
 
 ---
 
-## 🧠 Conclusão
+## Resultados
 O sistema faz uso eficiente das interrupções para leitura de sensores Hall e controle temporal não bloqueante (`millis()`), permitindo medições precisas e atualização periódica dos valores no display Nextion.
 
 Esse modelo pode ser expandido facilmente para incluir novos sensores ou funções de calibração.
 
----
-**Autor:** Iori Rodrigues  
-**Plataforma:** ESP32 (PlatformIO)  
-**Framework:** Arduino  
-**Versão:** 1.0  
+## Layout da tela
+
+<div align="center">
+<img src="img/layoutDaTela.png" alt="Layout da tela" width="%50"/>
+<br>
+</div>
+
 
 
 
