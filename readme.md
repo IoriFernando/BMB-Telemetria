@@ -1,7 +1,7 @@
 # Bumba Meu Baja - Telemetria
 
 <div align="center">
-<img src="img/logoBmb.png" alt="Projeto Completo" width="%"/>
+<img src="img/logoBmb.png" alt="Projeto Completo" width="%50"/>
 <br>
 </div>
 
