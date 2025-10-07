@@ -1,7 +1,7 @@
 # Bumba Meu Baja - Telemetria
 
 <div align="center">
-<img src="img/logoBmb.png" alt="Projeto Completo" width="%50"/>
+<img src="img/logoBmb.png" alt="Projeto Completo" width="250"/>
 <br>
 </div>
 
@@ -216,7 +216,7 @@ Esse modelo pode ser expandido facilmente para incluir novos sensores ou funçõ
 ## Layout da tela
 
 <div align="center">
-<img src="img/layoutDaTela.png" alt="Layout da tela" width="%50"/>
+<img src="img/layout.png" alt="Layout da tela" width="%50"/>
 <br>
 </div>
 
